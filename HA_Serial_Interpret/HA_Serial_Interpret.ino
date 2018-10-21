@@ -2,6 +2,12 @@ const byte numChars = 32;
 char receivedChars[numChars];
 boolean NewData = false;
 
+#define LightRelay = A0;
+#define FanRelay = A1;
+
+char* circuit;
+char* command;
+
 void setup(void)
   {
     // Setup Serial and wait until it is ready.
@@ -12,12 +18,16 @@ void setup(void)
 
 void loop(void)
   {
-    ReadData();
-    UseData();
+    ReadData(circuit,command);
+    
+    if (NewData == true)
+      {
+        UseData(circuit, command);
+      }
   }
   
 //_________________________________________________________________________  
-void ReadData()
+void ReadData(char* CircuitOut,char* CommandOut)
   {
     static boolean recvInProgress = false;
     static byte ndx = 0;
@@ -52,17 +62,35 @@ void ReadData()
           {
             recvInProgress = true;
           }
-      }  
+      }
+    
+    CircuitOut = strtok(receivedChars, ",");
+    CommandOut = strtok(NULL, ",");
+    return;
   }
   
 //_________________________________________________________________________ 
-void UseData() 
+char UseData(char* CircuitIn,char* CommandIn) 
   {
-    if (NewData == true) 
+    char CircuitChar = char(CircuitIn);
+    char CommandChar = char(CommandIn);
+    
+    NewData = false;
+    
+    Serial.println("USE DATA");
+    Serial.print("Circuit: ");
+    Serial.println(CircuitChar);
+    Serial.print("Command: ");
+    Serial.println(CommandChar);
+    
+    switch (CircuitChar)
       {
-        Serial.print("This just in ... ");
-        Serial.println(receivedChars);
-        NewData = false;
+        case 'Lights':
+          Serial.println("CHANGING LIGHTS");
+          break;
+        case 'Fan':
+          Serial.println("CHANGING FAN");
+          break;
       }
   }
 
