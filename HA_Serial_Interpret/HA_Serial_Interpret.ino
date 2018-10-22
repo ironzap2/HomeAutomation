@@ -17,7 +17,14 @@ void setup()
     // Setup Serial and wait until it is ready.
     Serial.begin(9600);
     while (!Serial);
-    Serial.println("Arduino is ready.");
+    // Serial.println("Arduino is ready.");
+    
+    pinMode(LightSensor, INPUT);
+    pinMode(LightRelay, OUTPUT);
+    
+    pinMode(FanSensor, INPUT);
+    pinMode(FanRelay, OUTPUT);
+   
   }
 
 void loop()
@@ -78,34 +85,40 @@ void UseData()
     circuit = strtok(receivedChars, ",");
     command = strtok(NULL, ",");
     
-    Serial.println("USE DATA");
-    Serial.print("Circuit: ");
-    Serial.println(circuit);
-    Serial.print("Command: ");
-    Serial.println(command);
+    // Serial.println("USE DATA");
+    // Serial.print("Circuit: ");
+    // Serial.println(circuit);
+    // Serial.print("Command: ");
+    // Serial.println(command);
     
     // Tell ReadCurrent() which sensor to read
     if (strcmp(circuit, "Lights") == 0)
       {
+        // Serial.println("strcmp, Lights");
         ToggleRelay(LightSensor, LightRelay);
       }
     else if (strcmp(circuit, "Fan") == 0)
       {
+        // Serial.println("strcmp, Fan");
         ToggleRelay(FanSensor, FanRelay);
       }
   }
 
 //_________________________________________________________________________ 
-void ToggleRelay(const int sensor, const int relay)
+void ToggleRelay(const int sensor, int relay)
   {
     current = ReadCurrent(sensor);
+    // Serial.print("Current: ");
+    // Serial.println(current);
     
-    if (strcmp(command, "ON") == 0 && current == 0)
+    if (strcmp(command, "ON") == 0 && current < 200)
       {
+        // Serial.println("Turned ON");
         digitalWrite(relay, !digitalRead(relay));
       }
-    else if (strcmp(command, "OFF") == 0 && current != 0)
+    else if (strcmp(command, "OFF") == 0 && current >= 200)
       {
+        // Serial.println("Turned OFF");
         digitalWrite(relay, !digitalRead(relay));
       }
   }
