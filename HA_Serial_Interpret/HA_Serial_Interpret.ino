@@ -85,11 +85,11 @@ void UseData()
     circuit = strtok(receivedChars, ",");
     command = strtok(NULL, ",");
     
-    // Serial.println("USE DATA");
-    // Serial.print("Circuit: ");
-    // Serial.println(circuit);
-    // Serial.print("Command: ");
-    // Serial.println(command);
+    Serial.println("USE DATA");
+    Serial.print("Circuit: ");
+    Serial.println(circuit);
+    Serial.print("Command: ");
+    Serial.println(command);
     
     // Tell ReadCurrent() which sensor to read
     if (strcmp(circuit, "Lights") == 0)
@@ -111,12 +111,12 @@ void ToggleRelay(const int sensor, int relay)
     // Serial.print("Current: ");
     // Serial.println(current);
     
-    if (strcmp(command, "ON") == 0 && current < 200)
+    if (strcmp(command, "True") == 0 && current < 200)
       {
         // Serial.println("Turned ON");
         digitalWrite(relay, !digitalRead(relay));
       }
-    else if (strcmp(command, "OFF") == 0 && current >= 200)
+    else if (strcmp(command, "False") == 0 && current >= 200)
       {
         // Serial.println("Turned OFF");
         digitalWrite(relay, !digitalRead(relay));
